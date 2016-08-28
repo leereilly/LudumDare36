@@ -7,7 +7,7 @@ public class TowerBehaviour : MonoBehaviour
 
 	[SerializeField] List<GameObject> _Enemies; 
 
-	[SerializeField] GameObject _bulletPrefab;
+	[SerializeField] private GameObject _bulletPrefab;
 	[SerializeField] float _AttackSpeed;
 	[SerializeField] float _Damage;
 
@@ -32,15 +32,27 @@ public class TowerBehaviour : MonoBehaviour
 
 	IEnumerator ShootBullet()
 	{
-		_RoutineHandle = true;
-		Debug.Log ("Bullet Created");
 
-		GameObject bullet = Instantiate (_bulletPrefab, this.transform.position, this.transform.rotation);
-		Bullet _bulletcomp = bullet.GetComponent<Bullet> ();
+		if (_Enemies.Count > 0) 
+		{
+			_RoutineHandle = true;
+			Debug.Log ("Bullet Created");
+
+			GameObject bullet = (GameObject)Instantiate (_bulletPrefab, this.transform.position, this.transform.rotation);
+			Bullet _bulletcomp = bullet.GetComponent<Bullet> ();
 
 
-		yield return new WaitForSeconds (_AttackSpeed);
-		_RoutineHandle = false;
+			if(_Enemies[0] == null)
+			{ 
+				_Enemies.RemoveAt (0);
+			}
+
+			if(_Enemies.Count > 0)
+			_bulletcomp.SetTarget (_Enemies [0]);
+
+			yield return new WaitForSeconds (_AttackSpeed);
+			_RoutineHandle = false;
+		}
 	}
 
 

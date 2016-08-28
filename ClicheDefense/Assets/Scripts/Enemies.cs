@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AIAgent : MonoBehaviour 
+public class Enemies : MonoBehaviour 
 {
-	[SerializeField] private float _HealthPoints; //Amount of health points each creature has
-	[SerializeField] private int _GoldAmount; //This is the amount of gold they give on death
+	public float _HealthPoints; //Amount of health points each creature has
+	public int _GoldAmount; //This is the amount of gold they give on death
 
 	private NavMeshAgent _Agent;
 	[SerializeField] private Vector3 TargetDestination;
+
 	// Use this for initialization
 
 	// Use this for initialization
@@ -15,6 +16,7 @@ public class AIAgent : MonoBehaviour
 	{
 		_Agent = GetComponent<NavMeshAgent> ();
 		_Agent.SetDestination (TargetDestination);
+
 	}
 	
 	// Update is called once per frame
@@ -32,10 +34,12 @@ public class AIAgent : MonoBehaviour
 		TargetDestination = Destination;
 	}
 
-	public virtual void OnDeath()
+	public void OnDeath()
 	{
-		
+
+
+		GameObject.Find ("Canvas").GetComponent<Resources> ().AddGold (_GoldAmount);
 		Debug.Log ("Creature is dead");
-		Destroy (this);
+		Destroy (this.gameObject);
 	}
 }
