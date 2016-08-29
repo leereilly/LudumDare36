@@ -4,17 +4,17 @@ using System.Collections;
 public class Bullet : MonoBehaviour 
 {
 	//Target to home in on
-	[SerializeField] GameObject _Target;
+	private GameObject _Target;
 	[SerializeField] private float _damage;
 	[SerializeField] private float _movementspeed;
 
 
-
+	private Vector3 TargetLastPosition;
 
 	// Use this for initialization
 	void Start () 
 	{
-	
+		//StartCoroutine (DestroyBullet ());
 	}
 	
 	// Update is called once per frame
@@ -25,16 +25,30 @@ public class Bullet : MonoBehaviour
 
 	void HomeOnTarget()
 	{
-		if (_Target != null) 
-		{
-			float step = _movementspeed * Time.deltaTime;
+		float step = _movementspeed * Time.deltaTime;
+
+		if (_Target != null) {
+			//float step = _movementspeed * Time.deltaTime;
+			TargetLastPosition = _Target.transform.position;
+			//Debug.Log (_Target.transform.position.ToString ());
 			transform.position = Vector3.MoveTowards (transform.position, _Target.transform.position, step);
-		} 
 
-
-		else
-			Destroy (this.gameObject);
+		}
+		else 
+		{
+			if (TargetLastPosition != Vector3.zero) {
+				transform.position = Vector3.MoveTowards (transform.position, TargetLastPosition, step);
+				StartCoroutine (DestroyBullet ());
+			} 
+			else 
+			{
+				transform.position = transform.forward * step;
+				StartCoroutine (DestroyBullet ());
+			}
+		}
 	}
+		
+
 
 	public void SetTarget(GameObject Target)
 	{
@@ -49,6 +63,22 @@ public class Bullet : MonoBehaviour
 			enemy._HealthPoints -= _damage;
 			Destroy (this.gameObject);
 		}
+
+	}
+
+
+	IEnumerator DestroyBullet()
+	{
+		if (_Target == null) 
+		{
+			Debug.Log ("Destroying bullet");
+			yield return new WaitForSeconds (.20f);
+			Destroy (this.gameObject);
+
+		}
+
+		//yield return new WaitForSeconds (1.0f);
+		StartCoroutine (DestroyBullet ());
 
 	}
 

@@ -15,7 +15,7 @@ public class Resources : MonoBehaviour {
 
 
 	private GameObject _spawnerReference;
-	private bool _RoutineHandle = false;
+//	private bool _RoutineHandle = false;
 
 
 	private GameObject _SelectedGameObject;
